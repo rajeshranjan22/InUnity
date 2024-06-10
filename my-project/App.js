@@ -1,12 +1,12 @@
-import {View} from "react-native"
+import { View } from "react-native";
 import 'react-native-gesture-handler';
 import {
   NavigationContainer,
   useNavigation,
   DrawerActions,
 } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Entypo';
 import DrawerContent from './DrawerContent';
@@ -16,9 +16,14 @@ import ProfileScreen from './src/Screens/ProfileScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignInPage from './src/Screens/Authentication/SignInPage';
 import SignUpPage from './src/Screens/Authentication/SignUpPage';
+import Ionicons from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
-const StackNav = () => {
-  const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
+
+const HomeStack = () => {
   const navigation = useNavigation();
   return (
     <Stack.Navigator
@@ -47,26 +52,67 @@ const StackNav = () => {
         }}
       />
       <Stack.Screen name="Profile" component={ProfileScreen} />
-
+      <Stack.Screen name="SignIn" component={SignInPage} />
     </Stack.Navigator>
   );
 };
 
 const DrawerNav = () => {
-  const Drawer = createDrawerNavigator();
   return (
     <Drawer.Navigator
       drawerContent={props => <DrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
       }}>
-      <Drawer.Screen name="Home" component={StackNav} />
+      <Drawer.Screen name="Home" component={BottomTabs} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
+      {/* Add more screens if needed */}
     </Drawer.Navigator>
   );
 };
 
+const BottomTabs = () => {
+  return (
+    <Tab.Navigator screenOptions={{
+      tabBarActiveTintColor:"#0163d2",
+      tabBarInactiveTintColor:"gray",
+      tabBarLabelStyle:{
+        fontSize:12,
+        paddingBottom:1,
+        fontWeight:500,
+      }
+    }}>
+      <Tab.Screen
+        name="Home"
+        component={HomeStack}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name="home"
+              size={28}
+              color={focused ? "#0163d2" : "gray"}
+            />
+          )
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <AntDesign
+              name="setting"
+              size={28}
+              color={focused ? "#0163d2" : "gray"}
+            />
+          )
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
 const LoginNav = () => {
-  const Stack = createNativeStackNavigator();
   return (
     <View style={{ flex: 1 }}>
       <Stack.Navigator
@@ -75,29 +121,29 @@ const LoginNav = () => {
         }}>
         <Stack.Screen name="SignIn" component={SignInPage} />
         <Stack.Screen name="SignUp" component={SignUpPage} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Home" component={BottomTabs} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </View>
   );
 }
 
-
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  async function getData() {
-    const data = await AsyncStorage.getItem("isLoggedIn");
-    // console.log(data, "rj")
-    setIsLoggedIn(data)
-  }
+  
   useEffect(() => {
-    getData()
+    const getData = async () => {
+      const data = await AsyncStorage.getItem("isLoggedIn");
+      setIsLoggedIn(data);
+    };
+    getData();
   }, []);
 
   return (
     <NavigationContainer>
       {isLoggedIn ? <DrawerNav /> : <LoginNav />}
-
     </NavigationContainer>
   );
 }
+
 export default App;
