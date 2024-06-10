@@ -65,7 +65,6 @@ const DrawerNav = () => {
         headerShown: false,
       }}>
       <Drawer.Screen name="Home" component={BottomTabs} />
-      <Drawer.Screen name="Profile" component={ProfileScreen} />
       {/* Add more screens if needed */}
     </Drawer.Navigator>
   );
@@ -121,7 +120,6 @@ const LoginNav = () => {
         }}>
         <Stack.Screen name="SignIn" component={SignInPage} />
         <Stack.Screen name="SignUp" component={SignUpPage} />
-        <Stack.Screen name="Home" component={BottomTabs} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </View>
